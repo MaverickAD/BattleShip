@@ -23,7 +23,7 @@ socket.on('display-makerBoard', () => {
 
         let readyButton = document.getElementById("ready");
 
-        readyButton.addEventListener("click", () => {
+        readyButton.addEventListener("click", (e) => {
             let total = 0;
             let buttons = document.querySelectorAll("button");
             buttons.forEach(e => {
@@ -32,6 +32,8 @@ socket.on('display-makerBoard', () => {
                 }
             });
             if (total === 5){
+                e.target.style.background = "green";
+                e.target.disabled = true;
                 socket.emit('player-ready', true, shipManager.getMap());
                 console.log(shipManager.getMap());
             }
@@ -59,6 +61,11 @@ socket.on('display-game', () => {
         Lib.createBoardSecond(weaponTableReturn, weaponTableServer);
         gameTable.appendChild(weaponTableReturn);
 
+
+        for (let i = 0; i < weaponTableReturn.children.length; i++){
+            weaponTableReturn.children[i].style.background = "black";
+            weaponTableReturn.children[i].style.borderColor = "gray";
+        }
 
         Lib.createWeaponContainer(weaponTable);
         for(let i = 0; i < 4; i++){
@@ -95,15 +102,18 @@ socket.on('display-game', () => {
                     switch (weaponSelected) {
                         case 'M':
                             event.target.textContent = weaponSelected;
+                            event.target.style.background = "white";
                             socket.emit('missile', pos);
                             break;
                         case 'R':
                             event.target.textContent = weaponSelected;
+                            event.target.style.background = "white";
                             for (let j = 0; j < weaponTableReturn.children.length; j++){
                                 for (let k = -1; k < 2;  k++){
                                     for (let l = -1; l < 2; l++){
                                         if (weaponTableReturn.children[j].id === String(parseInt(pos[0]) + k) + '-' + String(parseInt(pos[2]) + l)){
                                             weaponTableReturn.children[j].textContent = weaponSelected;
+                                            weaponTableReturn.children[j].style.background = "white";
                                         }
                                     }
                                 }
@@ -112,13 +122,16 @@ socket.on('display-game', () => {
                             break;
                         case 'F':
                             event.target.textContent = weaponSelected;
+                            event.target.textContent.background = "white";
                             for (let j = 0; j < weaponTableReturn.children.length; j++){
                                 for (let k = -1; k < 2;  k++){
                                     if (weaponTableReturn.children[j].id === String(parseInt(pos[0]) + k) + '-' + pos[2]){
                                         weaponTableReturn.children[j].textContent = weaponSelected;
+                                        weaponTableReturn.children[j].style.background = "white";
                                     }
                                     if (weaponTableReturn.children[j].id === pos[0] + '-' + String(parseInt(pos[2]) + k)){
                                         weaponTableReturn.children[j].textContent = weaponSelected;
+                                        weaponTableReturn.children[j].style.background = "white";
                                     }
                                 }
                             }
@@ -126,6 +139,7 @@ socket.on('display-game', () => {
                             break;
                         case 'T':
                             event.target.textContent = weaponSelected;
+                            event.target.style.background = "white";
                             socket.emit('torpedo', pos);
                             break;
                     }
@@ -140,7 +154,8 @@ socket.on('missile-result', (updateBoard) => {
     let board = document.getElementById("weapon-board");
     for (let i = 0; i < 10 * 10; i++) {
         if (board.children[i].textContent === 'M' && updateBoard[board.children[i].id[0] - 1][board.children[i].id[2] - 1] === 'M-G') {
-            board.children[i].textContent = 'M-G';
+            board.children[i].textContent = '';
+            board.children[i].style.background = "red";
         }
 
     }
@@ -150,8 +165,8 @@ socket.on('radar-result', (updateBoard) => {
     let board = document.getElementById("weapon-board");
     for (let i = 0; i < 10 * 10; i++) {
         if (board.children[i].textContent === 'R' && updateBoard[board.children[i].id[0] - 1][board.children[i].id[2] - 1] === 'R-G') {
-            board.children[i].textContent = 'R-G';
-
+            board.children[i].textContent = '';
+            board.children[i].style.background = "green";
         }
     }
 
@@ -161,8 +176,8 @@ socket.on('frag-result', (updateBoard) => {
     let board = document.getElementById("weapon-board");
     for (let i = 0; i < 10 * 10; i++) {
         if (board.children[i].textContent === 'F' && updateBoard[board.children[i].id[0] - 1][board.children[i].id[2] - 1] === 'F-G') {
-            board.children[i].textContent = 'F-G';
-
+            board.children[i].textContent = '';
+            board.children[i].style.background = "red";
         }
     }
 })
@@ -171,8 +186,9 @@ socket.on('torpedo-result', (updateBoard) => {
     let board = document.getElementById("weapon-board");
     for (let i = 0; i < 10 * 10; i++) {
         if (board.children[i].textContent === 'T' && updateBoard[board.children[i].id[0] - 1][board.children[i].id[2] - 1] === 'T-G') {
-            board.children[i].textContent = 'T-G';
-
+            board.children[i].textContent = '';
+            board.children[i].style.background = "red";
         }
     }
 })
+

@@ -43,7 +43,9 @@ let Lib = (function () {
                 div.id = String(x) + "-" + String(y);
 
                 if(copy[x - 1][y - 1] !== 0){
-                    div.textContent = String(copy[x - 1][y - 1]);
+                    if (copy[x - 1][y - 1] === 1){
+                        div.style.background = 'gray';
+                    }
                 }
                 table.appendChild(div);
             }
